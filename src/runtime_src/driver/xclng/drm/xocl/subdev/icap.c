@@ -543,6 +543,7 @@ static int icap_freeze_axi_gate(struct icap *icap)
 	ICAP_INFO(icap, "freezing AXI gate");
 	BUG_ON(icap->icap_axi_gate_frozen);
 
+	write_lock(&XDEV(xdev)->rwlock);
 	(void) reg_rd(&icap->icap_axi_gate->iag_rd);
 	reg_wr(&icap->icap_axi_gate->iag_wr, 0x0);
 	(void) reg_rd(&icap->icap_axi_gate->iag_rd);
@@ -588,6 +589,8 @@ static int platform_freeze_axi_gate(struct platform_device *pdev)
 
 static int icap_free_axi_gate(struct icap *icap)
 {
+	xdev_handle_t xdev = xocl_get_xdev(icap->icap_pdev);
+
 	ICAP_INFO(icap, "freeing AXI gate");
 	/*
 	 * First pulse the OCL RESET. This is important for PR with multiple
@@ -616,6 +619,7 @@ static int icap_free_axi_gate(struct icap *icap)
 	(void) reg_rd(&icap->icap_axi_gate->iag_rd);
 
 	icap->icap_axi_gate_frozen = false;
+	write_unlock(&XDEV(xdev)->rwlock);
 
 	/* reset kds after AXI freeze */
 	reset_scheduler(icap);
