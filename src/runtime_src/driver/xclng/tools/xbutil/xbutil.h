@@ -235,6 +235,7 @@ public:
 
     int parseComputeUnits(const std::vector<ip_data> &computeUnits) const
     {
+#if 0
         for( unsigned int i = 0; i < computeUnits.size(); i++ ) {
             boost::property_tree::ptree ptCu;
             unsigned statusBuf;
@@ -247,6 +248,7 @@ public:
             ptCu.put( "status",       parseCUStatus( statusBuf ) );
             sensor_tree::add_child( "board.compute_unit.cu", ptCu );
         }
+#endif
         return 0;
     }
 
@@ -362,16 +364,16 @@ public:
             boost::property_tree::ptree ptMem;
             ptMem.put( "index",     i );
             ptMem.put( "type",      str );
- 
+
             /* TODO:
              * Only 4 entries in mDimmTemp[]. m_count can be greater than 4, so this will
              * overrun mDimmTemp[]. Fill any further entries with the data type (unsigned short)
              * max value of 65535. This get's parsed as "N/A" by sensor_tree::get_pretty().
              */
             if( i < 4 )
-                ptMem.put( "temp",      m_devinfo.mDimmTemp[i] ); 
+                ptMem.put( "temp",      m_devinfo.mDimmTemp[i] );
             else
-                ptMem.put( "temp", 65535 ); 
+                ptMem.put( "temp", 65535 );
             ptMem.put( "tag",       map->m_mem_data[i].m_tag );
             ptMem.put( "enabled",   map->m_mem_data[i].m_used ? true : false );
             ptMem.put( "size",      unitConvert(map->m_mem_data[i].m_size << 10) );
@@ -622,7 +624,7 @@ public:
             pcidev::get_dev(m_idx)->mgmt->sysfs_get("dna", "dna", errmsg, dna);
             sensor_tree::put( "board.info.dna", dna);
         }
-        
+
 
         // physical
         sensor_tree::put( "board.physical.thermal.pcb.top_front",                m_devinfo.mSE98Temp[ 0 ] );
@@ -772,9 +774,9 @@ public:
              << std::setw(16) << sensor_tree::get_pretty<unsigned long long>( "board.physical.electrical.12v_pex.current" )
              << std::setw(16) << sensor_tree::get_pretty<unsigned long long>( "board.physical.electrical.12v_aux.current" ) << std::endl;
         ostr << std::setw(16) << "3V3 PEX" << std::setw(16) << "3V3 AUX" << std::setw(16) << "DDR VPP BOTTOM" << std::setw(16) << "DDR VPP TOP" << std::endl;
-        ostr << std::setw(16) << sensor_tree::get_pretty<unsigned short>( "board.physical.electrical.3v3_pex.voltage"        ) 
-             << std::setw(16) << sensor_tree::get_pretty<unsigned short>( "board.physical.electrical.3v3_aux.voltage"        ) 
-             << std::setw(16) << sensor_tree::get_pretty<unsigned short>( "board.physical.electrical.ddr_vpp_bottom.voltage" ) 
+        ostr << std::setw(16) << sensor_tree::get_pretty<unsigned short>( "board.physical.electrical.3v3_pex.voltage"        )
+             << std::setw(16) << sensor_tree::get_pretty<unsigned short>( "board.physical.electrical.3v3_aux.voltage"        )
+             << std::setw(16) << sensor_tree::get_pretty<unsigned short>( "board.physical.electrical.ddr_vpp_bottom.voltage" )
              << std::setw(16) << sensor_tree::get_pretty<unsigned short>( "board.physical.electrical.ddr_vpp_top.voltage"    ) << std::endl;
         ostr << std::setw(16) << "SYS 5V5" << std::setw(16) << "1V2 TOP" << std::setw(16) << "1V8 TOP" << std::setw(16) << "0V85" << std::endl;
         ostr << std::setw(16) << sensor_tree::get_pretty<unsigned short>( "board.physical.electrical.sys_5v5.voltage" )
