@@ -194,8 +194,14 @@ static int xma_inc_ref_shm(XmaResConfig *xma_shm, bool config_owner);
 
 XmaResources xma_res_shm_map(XmaSystemCfg *config)
 {
+    char *shm_file;
     xma_logmsg(XMA_DEBUG_LOG, XMA_RES_MOD, "%s()\n", __func__);
     xma_set_shm_filenames();
+    
+    shm_file = getenv("XMA_DB_FILE");
+    if (!shm_file)
+        return (XmaResources)xma_shm_open(shm_file, config);
+
     return (XmaResources)xma_shm_open(XMA_SHM_FILE, config);
 }
 

@@ -49,6 +49,11 @@ int32_t xma_initialize(char *cfgfile)
 {
     int32_t ret;
     bool    rc;
+    char    *env_cfgfile;
+
+    env_cfgfile = getenv("XMA_CFG_FILE");
+    if (env_cfgfile)
+        cfgfile = env_cfgfile;
 
     if (!cfgfile) {
         cfgfile = XMA_CFG_DEFAULT;
