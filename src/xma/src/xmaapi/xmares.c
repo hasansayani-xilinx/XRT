@@ -199,10 +199,10 @@ XmaResources xma_res_shm_map(XmaSystemCfg *config)
     xma_set_shm_filenames();
     
     shm_file = getenv("XMA_DB_FILE");
-    if (!shm_file)
+    if (NULL == shm_file)
+        return (XmaResources)xma_shm_open(XMA_SHM_FILE, config);
+    else
         return (XmaResources)xma_shm_open(shm_file, config);
-
-    return (XmaResources)xma_shm_open(XMA_SHM_FILE, config);
 }
 
 void xma_res_shm_unmap(XmaResources shm_cfg)
